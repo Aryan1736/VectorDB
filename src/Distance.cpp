@@ -21,3 +21,10 @@ float manhattan(const std::vector<float>& a, const std::vector<float>& b) {
     for (int i = 0; i < (int)a.size(); i++) s += std::abs(a[i]-b[i]);
     return s;
 }
+
+DistFn getDistFn(const std::string& m)
+{
+    if (m == "cosine") return cosine;
+    if (m == "manhattan") return manhattan;
+    return euclidean;
+}
