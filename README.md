@@ -1,4 +1,4 @@
-# VectorDB-CPP
+# VectorDB
 
 Building a Vector Database from scratch in C++.
 
