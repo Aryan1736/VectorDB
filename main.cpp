@@ -1,80 +1,41 @@
 #include <iostream>
 
-#include "Distance.hpp"
-#include "BruteForce.hpp"
-#include "KDTree.hpp"
+#include "Chunker.hpp"
+#include "DocumentDB.hpp"
+#include "Embedder.hpp"
 
 int main()
 {
-    BruteForce brute;
-    KDTree tree(3);
+    std::string text =
+        "Deadlock occurs when processes "
+        "wait forever for resources.";
 
-    VectorItem v1{
-        1,
-        "item1",
-        "demo",
-        {1,2,3}
-    };
+    auto emb =
+        Embedder::embed(text);
 
-    VectorItem v2{
-        2,
-        "item2",
-        "demo",
-        {10,10,10}
-    };
+    std::cout
+        << "Embedding dims: "
+        << emb.size()
+        << "\n";
 
-    VectorItem v3{
-        3,
-        "item3",
-        "demo",
-        {2,3,4}
-    };
+    DocumentDB db;
 
-    brute.insert(v1);
-    brute.insert(v2);
-    brute.insert(v3);
+    db.insert(
+        "OS Notes",
+        text,
+        emb
+    );
 
-    tree.insert(v1);
-    tree.insert(v2);
-    tree.insert(v3);
-
-    auto bruteAns =
-        brute.knn(
-            {1.5,2.5,3.5},
-            2,
-            getDistFn("euclidean")
+    auto result =
+        db.search(
+            emb,
+            1
         );
 
-    auto treeAns =
-        tree.knn(
-            {1.5,2.5,3.5},
-            2,
-            getDistFn("euclidean")
-        );
-
-    std::cout << "\n=== Brute Force ===\n";
-
-    for (auto& p : bruteAns)
-    {
-        std::cout
-            << "id = "
-            << p.second
-            << " dist = "
-            << p.first
-            << '\n';
-    }
-
-    std::cout << "\n=== KD Tree ===\n";
-
-    for (auto& p : treeAns)
-    {
-        std::cout
-            << "id = "
-            << p.second
-            << " dist = "
-            << p.first
-            << '\n';
-    }
+    std::cout
+        << "Found: "
+        << result[0].second.title
+        << "\n";
 
     return 0;
 }

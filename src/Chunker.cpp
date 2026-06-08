@@ -1,0 +1,64 @@
+#include "Chunker.hpp"
+
+#include <sstream>
+
+std::vector<std::string>
+Chunker::chunkText(
+    const std::string& text,
+    int chunkWords,
+    int overlapWords
+)
+{
+    std::istringstream ss(text);
+
+    std::vector<std::string> words;
+
+    std::string word;
+
+    while(ss >> word)
+    {
+        words.push_back(word);
+    }
+
+    if(words.empty())
+        return {};
+
+    if((int)words.size() <= chunkWords)
+        return {text};
+
+    std::vector<std::string> chunks;
+
+    int step =
+        chunkWords -
+        overlapWords;
+
+    for(
+        int i = 0;
+        i < (int)words.size();
+        i += step
+    )
+    {
+        int end =
+            std::min(
+                i + chunkWords,
+                (int)words.size()
+            );
+
+        std::string chunk;
+
+        for(int j = i; j < end; j++)
+        {
+            if(j > i)
+                chunk += " ";
+
+            chunk += words[j];
+        }
+
+        chunks.push_back(chunk);
+
+        if(end == (int)words.size())
+            break;
+    }
+
+    return chunks;
+}
