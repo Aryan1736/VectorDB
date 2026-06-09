@@ -1,4 +1,5 @@
 #include "DocumentDB.hpp"
+#include <iostream>
 
 DocumentDB::DocumentDB()
     :
@@ -69,23 +70,24 @@ DocumentDB::search(
     std::lock_guard<std::mutex> lk(mu);
 
     auto raw =
-        hnsw.knn(
-            query,
-            k,
-            50
-        );
+    brute.knn(
+        query,
+        k,
+        getDistFn("cosine")
+    );
 
     std::vector<
-        std::pair<float, DocItem>
+        std::pair<float, DocItem>   
     > result;
 
     for(auto& [dist,id] : raw)
     {
+
         if(!store.count(id))
             continue;
 
-        if(dist > maxDist)
-            continue;
+        // if(dist > maxDist)
+        //    continue;
 
         result.push_back(
         {

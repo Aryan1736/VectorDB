@@ -1,41 +1,29 @@
 #include <iostream>
 
-#include "Chunker.hpp"
-#include "DocumentDB.hpp"
-#include "Embedder.hpp"
+#include "RAGEngine.hpp"
 
 int main()
 {
-    std::string text =
-        "Deadlock occurs when processes "
-        "wait forever for resources.";
+    RAGEngine rag;
 
-    auto emb =
-        Embedder::embed(text);
-
-    std::cout
-        << "Embedding dims: "
-        << emb.size()
-        << "\n";
-
-    DocumentDB db;
-
-    db.insert(
+    rag.addDocument(
         "OS Notes",
-        text,
-        emb
+        "Deadlock occurs when processes wait forever "
+        "for resources. CPU scheduling determines "
+        "which process gets the CPU."
     );
 
-    auto result =
-        db.search(
-            emb,
-            1
+    std::cout
+        << "Documents: "
+        << rag.documentCount()
+        << "\n\n";
+
+    std::string answer =
+        rag.ask(
+            "What is deadlock?"
         );
 
     std::cout
-        << "Found: "
-        << result[0].second.title
+        << answer
         << "\n";
-
-    return 0;
 }
