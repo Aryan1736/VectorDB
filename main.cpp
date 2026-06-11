@@ -1,29 +1,12 @@
-#include <iostream>
-
-#include "RAGEngine.hpp"
+#include "Server.hpp"
 
 int main()
 {
-    RAGEngine rag;
+    Server server;
 
-    rag.addDocument(
-        "OS Notes",
-        "Deadlock occurs when processes wait forever "
-        "for resources. CPU scheduling determines "
-        "which process gets the CPU."
+    server.start(
+        8080
     );
 
-    std::cout
-        << "Documents: "
-        << rag.documentCount()
-        << "\n\n";
-
-    std::string answer =
-        rag.ask(
-            "What is deadlock?"
-        );
-
-    std::cout
-        << answer
-        << "\n";
+    return 0;
 }
