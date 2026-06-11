@@ -379,6 +379,74 @@ void HNSW::remove(int id)
     G.erase(id);
 }
 
+HNSW::GraphInfo
+HNSW::getInfo()
+{
+    GraphInfo gi;
+
+    gi.topLayer =
+        topLayer;
+
+    gi.nodeCount =
+        (int)G.size();
+
+    int maxL =
+        std::max(
+            topLayer + 1,
+            1
+        );
+
+    gi.nodesPerLayer.assign(
+        maxL,
+        0
+    );
+
+    gi.edgesPerLayer.assign(
+        maxL,
+        0
+    );
+
+    for(auto& [id, nd] : G)
+    {
+        gi.nodes.push_back(
+        {
+            id,
+            nd.item.metadata,
+            nd.item.category,
+            nd.maxLyr
+        });
+
+        for(
+            int lc = 0;
+            lc <= nd.maxLyr && lc < maxL;
+            lc++
+        )
+        {
+            gi.nodesPerLayer[lc]++;
+
+            if(lc < (int)nd.nbrs.size())
+            {
+                for(int nid : nd.nbrs[lc])
+                {
+                    if(id < nid)
+                    {
+                        gi.edgesPerLayer[lc]++;
+
+                        gi.edges.push_back(
+                        {
+                            id,
+                            nid,
+                            lc
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    return gi;
+}
+
 size_t HNSW::size() const
 {
     return G.size();

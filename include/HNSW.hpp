@@ -70,5 +70,34 @@ public:
 
     void remove(int id);
 
+    struct GraphInfo
+    {
+        int topLayer;
+        int nodeCount;
+
+        std::vector<int> nodesPerLayer;
+        std::vector<int> edgesPerLayer;
+
+        struct NV
+        {
+            int id;
+            std::string metadata;
+            std::string category;
+            int maxLyr;
+        };
+
+        struct EV
+        {
+            int src;
+            int dst;
+            int lyr;
+        };
+
+        std::vector<NV> nodes;
+        std::vector<EV> edges;
+    };
+
+    GraphInfo getInfo();
+
     size_t size() const;
 };

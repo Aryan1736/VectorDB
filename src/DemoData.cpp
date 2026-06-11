@@ -5,10 +5,6 @@ void loadDemoData(
     VectorDB& db
 )
 {
-    std::cout
-        << "Loading demo data...\n";
-    auto dist =
-        getDistFn("cosine");
 
     db.insert(
     "binary tree",
@@ -90,6 +86,4 @@ void loadDemoData(
         0.20,0.20,0.20,0.20
     });
 
-    std::cout
-        << "Loading Done...\n";
 }

@@ -216,6 +216,14 @@ VectorDB::benchmark(
     };
 }
 
+HNSW::GraphInfo
+VectorDB::hnswInfo()
+{
+    std::lock_guard<std::mutex> lk(mu);
+
+    return hnsw.getInfo();
+}
+
 std::vector<VectorItem>
 VectorDB::all()
 {

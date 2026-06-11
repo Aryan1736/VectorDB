@@ -79,6 +79,8 @@ public:
         const std::string& metric
     );
 
+    HNSW::GraphInfo hnswInfo();
+
     std::vector<VectorItem> all();
 
     size_t size();
