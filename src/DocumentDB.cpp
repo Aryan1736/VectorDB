@@ -3,7 +3,8 @@
 DocumentDB::DocumentDB()
     :
     hnsw(getDistFn("cosine")),
-    nextId(1)
+    nextId(1),
+    dims(0)
 {
 }
 
@@ -14,6 +15,15 @@ int DocumentDB::insert(
 )
 {
     std::lock_guard<std::mutex> lk(mu);
+
+    if(emb.empty())
+        return -1;
+
+    if(dims == 0)
+        dims = (int)emb.size();
+
+    if((int)emb.size() != dims)
+        return -1;
 
     DocItem doc;
 
@@ -114,4 +124,9 @@ size_t DocumentDB::size()
     std::lock_guard<std::mutex> lk(mu);
 
     return store.size();
+}
+
+int DocumentDB::getDims() const
+{
+    return dims;
 }

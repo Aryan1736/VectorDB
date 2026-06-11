@@ -377,6 +377,21 @@ void HNSW::remove(int id)
     }
 
     G.erase(id);
+
+    if(entryPt == id)
+    {
+        entryPt = -1;
+        topLayer = -1;
+
+        for(auto& [nid, nd] : G)
+        {
+            if(nd.maxLyr > topLayer)
+            {
+                topLayer = nd.maxLyr;
+                entryPt = nid;
+            }
+        }
+    }
 }
 
 HNSW::GraphInfo

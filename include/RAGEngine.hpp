@@ -17,7 +17,7 @@ public:
 
     RAGEngine();
 
-    void addDocument(
+    int addDocument(
         const std::string& title,
         const std::string& text
     );
@@ -35,5 +35,9 @@ public:
 
     std::vector<DocItem> allDocuments();
 
+    bool removeDocument(int id);
+
     size_t documentCount();
+
+    int documentDims() const;
 };

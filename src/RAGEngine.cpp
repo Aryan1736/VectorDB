@@ -8,7 +8,7 @@ RAGEngine::RAGEngine()
 {
 }
 
-void RAGEngine::addDocument(
+int RAGEngine::addDocument(
     const std::string& title,
     const std::string& text
 )
@@ -19,6 +19,8 @@ void RAGEngine::addDocument(
             200,
             30
         );
+
+    int inserted = 0;
 
     for(size_t i = 0; i < chunks.size(); i++)
     {
@@ -41,7 +43,11 @@ void RAGEngine::addDocument(
             chunks[i],
             emb
         );
+
+        inserted++;
     }
+
+    return inserted;
 }
 
 std::vector<DocItem>
@@ -114,8 +120,20 @@ RAGEngine::allDocuments()
     return db.all();
 }
 
+bool
+RAGEngine::removeDocument(int id)
+{
+    return db.remove(id);
+}
+
 size_t
 RAGEngine::documentCount()
 {
     return db.size();
+}
+
+int
+RAGEngine::documentDims() const
+{
+    return db.getDims();
 }

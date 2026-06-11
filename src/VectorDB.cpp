@@ -17,6 +17,9 @@ int VectorDB::insert(
 {
     std::lock_guard<std::mutex> lk(mu);
 
+    if((int)emb.size() != dims)
+        return -1;
+
     VectorItem v;
 
     v.id = nextId++;
@@ -69,6 +72,9 @@ VectorDB::search(
 )
 {
     std::lock_guard<std::mutex> lk(mu);
+
+    if(k <= 0 || (int)query.size() != dims)
+        return {{}, 0, algo, metric};
 
     auto distFn =
         getDistFn(metric);
@@ -148,6 +154,9 @@ VectorDB::benchmark(
 )
 {
     std::lock_guard<std::mutex> lk(mu);
+
+    if(k <= 0 || (int)query.size() != dims)
+        return {0, 0, 0, (int)store.size()};
 
     auto distFn =
         getDistFn(metric);
