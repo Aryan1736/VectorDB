@@ -108,6 +108,12 @@ RAGEngine::ask(
     );
 }
 
+std::vector<DocItem>
+RAGEngine::allDocuments()
+{
+    return db.all();
+}
+
 size_t
 RAGEngine::documentCount()
 {

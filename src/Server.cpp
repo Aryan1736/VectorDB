@@ -21,7 +21,7 @@ static void cors(
     );
 
     res.set_header(
-        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Headers", 
         "Content-Type"
     );
 }
@@ -99,7 +99,7 @@ void Server::start(
                 << db.size()
                 << ","
                 << "\"documents\":"
-                << docDB.size()
+                << rag.documentCount()
                 << "}";
 
             res.set_content(
@@ -375,6 +375,155 @@ void Server::start(
                 << ","
                 << "\"nodeCount\":"
                 << info.nodeCount
+                << "}";
+
+            res.set_content(
+                ss.str(),
+                "application/json"
+            );
+        }
+    );
+
+    // ==========================
+    // POST /doc/insert
+    // ==========================
+    svr.Post(
+        "/doc/insert",
+        [&](const httplib::Request& req,
+            httplib::Response& res)
+        {
+            std::cout
+                << "BODY:\n"
+                << req.body
+                << "\n";
+
+            cors(res);
+
+            std::string title =
+                extractStr(
+                    req.body,
+                    "title"
+                );
+
+            std::string text =
+                extractStr(
+                    req.body,
+                    "text"
+                );
+
+            if(
+                title.empty()
+                ||
+                text.empty()
+            )
+            {
+                res.status = 400;
+
+                res.set_content(
+                    "{\"error\":\"missing fields\"}",
+                    "application/json"
+                );
+
+                return;
+            }
+
+            rag.addDocument(
+                title,
+                text
+            );
+
+            res.set_content(
+                "{\"status\":\"ok\"}",
+                "application/json"
+            );
+        }
+    );
+
+    // ==========================
+    // GET /doc/list
+    // ==========================
+    svr.Get(
+        "/doc/list",
+        [&](const httplib::Request&,
+            httplib::Response& res)
+        {
+            cors(res);
+
+            auto docs =
+                rag.allDocuments();
+
+            std::ostringstream ss;
+
+            ss << "[";
+
+            for(size_t i = 0; i < docs.size(); i++)
+            {
+                if(i)
+                    ss << ",";
+
+                ss
+                    << "{"
+                    << "\"id\":"
+                    << docs[i].id
+                    << ","
+                    << "\"title\":\""
+                    << docs[i].title
+                    << "\""
+                    << "}";
+            }
+
+            ss << "]";
+
+            res.set_content(
+                ss.str(),
+                "application/json"
+            );
+        }
+    );
+
+    // ==========================
+    // POST /doc/ask
+    // ==========================
+    svr.Post(
+        "/doc/ask",
+        [&](const httplib::Request& req,
+            httplib::Response& res)
+        {
+            cors(res);
+
+            std::string question =
+                extractStr(
+                    req.body,
+                    "question"
+                );
+
+            if(question.empty())
+            {
+                res.status = 400;
+
+                res.set_content(
+                    "{\"error\":\"missing question\"}",
+                    "application/json"
+                );
+
+                return;
+            }
+
+            int k = 3;
+
+            std::string answer =
+                rag.ask(
+                    question,
+                    k
+                );
+
+            std::ostringstream ss;
+
+            ss
+                << "{"
+                << "\"answer\":\""
+                << answer
+                << "\""
                 << "}";
 
             res.set_content(

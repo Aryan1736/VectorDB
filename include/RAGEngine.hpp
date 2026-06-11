@@ -2,7 +2,6 @@
 
 #include "DocumentDB.hpp"
 #include "OllamaClient.hpp"
-
 #include <string>
 #include <vector>
 
@@ -33,6 +32,8 @@ public:
         const std::string& question,
         int k = 3
     );
+
+    std::vector<DocItem> allDocuments();
 
     size_t documentCount();
 };

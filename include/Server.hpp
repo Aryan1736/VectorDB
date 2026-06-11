@@ -3,13 +3,14 @@
 #include "VectorDB.hpp"
 #include "DocumentDB.hpp"
 #include "OllamaClient.hpp"
+#include "RAGEngine.hpp"
 
 class Server
 {
 private:
 
     VectorDB db;
-    DocumentDB docDB;
+    RAGEngine rag;
     OllamaClient ollama;
 
 public:
